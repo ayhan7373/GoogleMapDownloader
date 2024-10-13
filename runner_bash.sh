@@ -12,7 +12,7 @@ SESSION_NAME="map"
 
 python3 ./KML_polygonal_conversion_to_kml_files_based_on_latitude.py > output.txt
 
-sleep 5
+sleep 15
 
 cp output/lat_$number/* .
 
