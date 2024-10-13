@@ -12,7 +12,7 @@ read -p "Enter a number: " number
 
 SESSION_NAME="map"
 
-python3 ./Polygonal_conversion_to_kml_files_based_on_latitude.py > output.txt
+python3 ./KML_polygonal_conversion_to_kml_files_based_on_latitude.py > output.txt
 
 sleep 5
 

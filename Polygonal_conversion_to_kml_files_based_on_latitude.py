@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import simplekml
 import os
 
+POLYGON_COORDS = [(21, 53), (20, 35), (20, 7), (42, 8), (71, 20), (80, 30), (82, 36), (66, 46), (43, 47), (38, 54), (21, 53)]
+
 def divide_polygon_by_degree(polygon):
     """
     Divides a polygon into smaller rectangles with a size of 1 degree in latitude and longitude.
@@ -23,10 +25,8 @@ def divide_polygon_by_degree(polygon):
 
     return smaller_polygons
 
-# Example usage:
-# Define the polygon coordinates (e.g., a rectangle)
-polygon_coords = [(21, 53), (20, 35), (20, 7), (42, 8), (71, 20), (80, 30), (82, 36), (66, 46), (43, 47), (38, 54), (21, 53)]
-polygon = Polygon(polygon_coords)
+# Define the polygon coordinates
+polygon = Polygon(POLYGON_COORDS)
 
 smaller_polygons = divide_polygon_by_degree(polygon)
 

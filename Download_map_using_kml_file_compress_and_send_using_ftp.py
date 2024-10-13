@@ -9,7 +9,9 @@ import time
 import shutil
 import subprocess
 import gzip
-import tarfile  # Import the tarfile module
+import tarfile
+
+ZOOM_LEVELS = range(1, 17) # Zoom levels 1 to 16
 
 def latlon_to_tile(lat, lon, zoom):
     """Convert latitude and longitude to tile coordinates."""
@@ -78,7 +80,7 @@ def main():
         polygon_dir_path = os.path.join("tiles", polygon_dir_name)
         os.makedirs(polygon_dir_path, exist_ok=True)
 
-        for zoom_level in range(1, 17):  # Zoom levels 1 to 16
+        for zoom_level in ZOOM_LEVELS:
             # Convert coordinates to tile coordinates
             x1, y1 = latlon_to_tile(top_left_lat, top_left_lon, zoom_level)
             x2, y2 = latlon_to_tile(bottom_right_lat, bottom_right_lon, zoom_level)
@@ -158,3 +160,7 @@ def tile_to_latlon(xtile, ytile, zoom):
 
 if __name__ == "__main__":
     main()
+
+""" Google_Hybrid_Map_URL: http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={zoom_level}"""
+""" Google_Satellite_Map_URL: http://mt0.google.com/vt/lyrs=s&hl=en&x={x}&y={y}&z={zoom_level}"""
+""" Bing_Hybrid_Map_URL: https://t.ssl.ak.dynamic.tiles.virtualearth.net/comp/ch/{zoom_level}/{x}/{y}?mkt=en-US&it=A&og=1&n=z"""
