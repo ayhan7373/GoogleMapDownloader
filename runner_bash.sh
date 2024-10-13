@@ -2,13 +2,11 @@
 
 apt update
 
-apt install python3-pip
-apt install pigz
-pip install pillow
-pip install shapely geopandas matplotlib simplekml
-pip install pykml
+apt install -y python3-pip pigz
 
-read -p "Enter a number: " number
+pip install pillow shapely geopandas matplotlib simplekml pykml
+
+read -p "Enter a lat number: " number
 
 SESSION_NAME="map"
 
