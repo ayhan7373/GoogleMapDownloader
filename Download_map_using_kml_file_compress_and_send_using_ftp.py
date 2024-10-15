@@ -65,6 +65,9 @@ def main():
     first_polygon_coords = coordinates[0]
     bottom_right_lat = min(coord[1] for coord in first_polygon_coords)
 
+    # Check for existing ZIP files and skip corresponding directories
+    existing_zip_files = {f.split('.zip')[0] for f in os.listdir('tiles') if f.endswith('.zip')}
+
     for polygon_coords in coordinates:
         # Print the coordinates of the polygon
         print(f"Polygon Coordinates: {polygon_coords}")
@@ -78,6 +81,17 @@ def main():
         # Create a directory name based on the polygon coordinates
         polygon_dir_name = f"{top_left_lat}_{top_left_lon}_{bottom_right_lat}_{bottom_right_lon}_zoom_1_to_16_google_hybrid_map"
         polygon_dir_path = os.path.join("tiles", polygon_dir_name)
+
+        # Skip if the directory has already been zipped
+        if polygon_dir_name in existing_zip_files:
+            print(f"Skipping {polygon_dir_name} as it has already been zipped.")
+            continue
+
+        # Check if the directory already exists and clear it
+        if os.path.exists(polygon_dir_path):
+            print(f"Clearing existing directory: {polygon_dir_path}")
+            shutil.rmtree(polygon_dir_path)
+
         os.makedirs(polygon_dir_path, exist_ok=True)
 
         for zoom_level in ZOOM_LEVELS:
