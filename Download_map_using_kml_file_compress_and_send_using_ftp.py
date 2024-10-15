@@ -65,6 +65,10 @@ def main():
     first_polygon_coords = coordinates[0]
     bottom_right_lat = min(coord[1] for coord in first_polygon_coords)
 
+    # Ensure the 'tiles' directory exists
+    if not os.path.exists('tiles'):
+        os.makedirs('tiles')
+
     # Check for existing ZIP files and skip corresponding directories
     existing_zip_files = {f.split('.zip')[0] for f in os.listdir('tiles') if f.endswith('.zip')}
 
