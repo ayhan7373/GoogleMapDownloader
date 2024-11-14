@@ -153,20 +153,24 @@ def main():
         # Remove the original directory after compression
         shutil.rmtree(polygon_dir_path)
 
-        # Wait for 5 minutes after downloading each polygon
+        # Upload the Zip file via FTP using curl
+        ftp_command = f'curl -T {zip_file_path} --user "aseman.ayhan@gmail.com:Ayhan1400" ftp://ir61.uploadboy.com'
+        subprocess.run(ftp_command, shell=True)
+
+        # Wait for 4 minutes after downloading each polygon
         print("Waiting for 4 minutes before processing the next polygon...")
         time.sleep(240)
 
-    # After all polygons are processed, compress all ZIP files into a single GZ file
-    all_zip_files = [f for f in os.listdir("tiles") if f.endswith(".zip")]
-    gz_file_path = os.path.join("tiles", f"{bottom_right_lat}.tar.gz")
-    with tarfile.open(gz_file_path, "w:gz") as tar:
-        for zip_file in all_zip_files:
-            tar.add(os.path.join("tiles", zip_file), arcname=zip_file)
+    # # After all polygons are processed, compress all ZIP files into a single GZ file
+    # all_zip_files = [f for f in os.listdir("tiles") if f.endswith(".zip")]
+    # gz_file_path = os.path.join("tiles", f"{bottom_right_lat}.tar.gz")
+    # with tarfile.open(gz_file_path, "w:gz") as tar:
+    #     for zip_file in all_zip_files:
+    #         tar.add(os.path.join("tiles", zip_file), arcname=zip_file)
 
-    # Upload the GZ file via FTP using curl
-    ftp_command = f'curl -T {gz_file_path} --user "aseman.ayhan@gmail.com:Ayhan1400" ftp://ir61.uploadboy.com'
-    subprocess.run(ftp_command, shell=True)
+    # # Upload the GZ file via FTP using curl
+    # ftp_command = f'curl -T {gz_file_path} --user "aseman.ayhan@gmail.com:Ayhan1400" ftp://ir61.uploadboy.com'
+    # subprocess.run(ftp_command, shell=True)
 
 def tile_to_latlon(xtile, ytile, zoom):
     """Convert tile coordinates to latitude and longitude."""
