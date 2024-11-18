@@ -157,6 +157,9 @@ def main():
         ftp_command = f'curl -T {zip_file_path} --user "aseman.ayhan@gmail.com:Ayhan1400" ftp://ir61.uploadboy.com'
         subprocess.run(ftp_command, shell=True)
 
+         # Remove the sip directory after upload
+        shutil.rmtree(zip_file_path)
+
         # Wait for 4 minutes after downloading each polygon
         print("Waiting for 4 minutes before processing the next polygon...")
         time.sleep(240)
