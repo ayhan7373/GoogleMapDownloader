@@ -176,18 +176,22 @@ def main():
     
     # Process the ZIP files in chunks of 10
     chunk_size = 10
+    gz_files = []
+    
     for i in range(0, len(all_zip_files), chunk_size):
         chunk = all_zip_files[i:i + chunk_size]
         
         # Create a unique name for the GZ file
         gz_file_path = os.path.join("tiles", f"{bottom_right_lat}_chunk_{i // chunk_size + 1}.tar.gz")
+        gz_files.append(gz_file_path)
         
         # Compress the current chunk of ZIP files into a GZ file
         with tarfile.open(gz_file_path, "w:gz") as tar:
             for zip_file in chunk:
                 tar.add(os.path.join("tiles", zip_file), arcname=zip_file)
-
-        # Upload the GZ file via FTP using curl
+    
+    # Upload all GZ files via FTP using curl
+    for gz_file_path in gz_files:
         ftp_command = f'curl -T {gz_file_path} --user "aseman.ayhan@gmail.com:Ayhan1400" ftp://ir61.uploadboy.com'
         subprocess.run(ftp_command, shell=True)
 
