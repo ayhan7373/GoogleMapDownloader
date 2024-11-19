@@ -199,7 +199,7 @@ def main():
     #         tar.add(os.path.join("tiles", zip_file), arcname=zip_file)
 
     # List all ZIP files in the "tiles" directory
-    all_zip_files = [f for f in os.listdir("tiles") if f.endswith(".zip")]
+    all_zip_files = sorted([f for f in os.listdir("tiles") if f.endswith(".zip")])
     
     # Process the ZIP files in chunks of 10
     chunk_size = 10
