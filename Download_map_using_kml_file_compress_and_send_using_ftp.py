@@ -10,8 +10,12 @@ import shutil
 import subprocess
 import gzip
 import tarfile
+import re
 
 ZOOM_LEVELS = range(1, 17) # Zoom levels 1 to 16
+
+# Number of retries
+max_retries = 3
 
 def latlon_to_tile(lat, lon, zoom):
     """Convert latitude and longitude to tile coordinates."""
@@ -49,6 +53,29 @@ def extract_coordinates_from_kml(kml_file):
             coordinates.append(polygon_coords)
     
     return coordinates
+
+# Function to upload a file with retry logic
+def upload_file(file_path, retries=0):
+    ftp_command = f'curl -T {file_path} --user "aseman.ayhan@gmail.com:Ayhan1400" ftp://ir61.uploadboy.com'
+    
+    try:
+        result = subprocess.run(ftp_command, shell=True, check=True, capture_output=True, text=True)
+        print(f"Upload successful: {file_path}")
+        print(result.stdout)
+    except subprocess.CalledProcessError as e:
+        if re.search(r'curl: \(55\)', e.stderr):
+            print(f"Upload failed with error 55: {file_path}")
+            print(e.stderr)
+            
+            if retries < max_retries:
+                print(f"Retrying upload for {file_path} (attempt {retries + 1})...")
+                time.sleep(5)  # Wait for 5 seconds before retrying
+                upload_file(file_path, retries + 1)
+            else:
+                print(f"Max retries reached for {file_path}. Giving up.")
+        else:
+            print(f"Upload failed with an unexpected error: {file_path}")
+            print(e.stderr)
 
 def main():
     # Find the first existing KML file in the directory
@@ -190,10 +217,14 @@ def main():
             for zip_file in chunk:
                 tar.add(os.path.join("tiles", zip_file), arcname=zip_file)
     
-    # Upload all GZ files via FTP using curl
+    # # Upload all GZ files via FTP using curl
+    # for gz_file_path in gz_files:
+    #     ftp_command = f'curl -T {gz_file_path} --user "aseman.ayhan@gmail.com:Ayhan1400" ftp://ir61.uploadboy.com'
+    #     subprocess.run(ftp_command, shell=True)
+        
+    # Upload all GZ files
     for gz_file_path in gz_files:
-        ftp_command = f'curl -T {gz_file_path} --user "aseman.ayhan@gmail.com:Ayhan1400" ftp://ir61.uploadboy.com'
-        subprocess.run(ftp_command, shell=True)
+        upload_file(gz_file_path)
 
 def tile_to_latlon(xtile, ytile, zoom):
     """Convert tile coordinates to latitude and longitude."""
