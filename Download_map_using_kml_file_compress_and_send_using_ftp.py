@@ -164,16 +164,32 @@ def main():
         print("Waiting for 4 minutes before processing the next polygon...")
         time.sleep(240)
 
-    # After all polygons are processed, compress all ZIP files into a single GZ file
-    all_zip_files = [f for f in os.listdir("tiles") if f.endswith(".zip")]
-    gz_file_path = os.path.join("tiles", f"{bottom_right_lat}.tar.gz")
-    with tarfile.open(gz_file_path, "w:gz") as tar:
-        for zip_file in all_zip_files:
-            tar.add(os.path.join("tiles", zip_file), arcname=zip_file)
+    # # After all polygons are processed, compress all ZIP files into a single GZ file
+    # all_zip_files = [f for f in os.listdir("tiles") if f.endswith(".zip")]
+    # gz_file_path = os.path.join("tiles", f"{bottom_right_lat}.tar.gz")
+    # with tarfile.open(gz_file_path, "w:gz") as tar:
+    #     for zip_file in all_zip_files:
+    #         tar.add(os.path.join("tiles", zip_file), arcname=zip_file)
 
-    # Upload the GZ file via FTP using curl
-    ftp_command = f'curl -T {gz_file_path} --user "aseman.ayhan@gmail.com:Ayhan1400" ftp://ir61.uploadboy.com'
-    subprocess.run(ftp_command, shell=True)
+    # List all ZIP files in the "tiles" directory
+    all_zip_files = [f for f in os.listdir("tiles") if f.endswith(".zip")]
+    
+    # Process the ZIP files in chunks of 10
+    chunk_size = 10
+    for i in range(0, len(all_zip_files), chunk_size):
+        chunk = all_zip_files[i:i + chunk_size]
+        
+        # Create a unique name for the GZ file
+        gz_file_path = os.path.join("tiles", f"{bottom_right_lat}_chunk_{i // chunk_size + 1}.tar.gz")
+        
+        # Compress the current chunk of ZIP files into a GZ file
+        with tarfile.open(gz_file_path, "w:gz") as tar:
+            for zip_file in chunk:
+                tar.add(os.path.join("tiles", zip_file), arcname=zip_file)
+
+        # Upload the GZ file via FTP using curl
+        ftp_command = f'curl -T {gz_file_path} --user "aseman.ayhan@gmail.com:Ayhan1400" ftp://ir61.uploadboy.com'
+        subprocess.run(ftp_command, shell=True)
 
 def tile_to_latlon(xtile, ytile, zoom):
     """Convert tile coordinates to latitude and longitude."""
